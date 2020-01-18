@@ -1,0 +1,37 @@
+{
+    "face": {
+        "crylaughside": "🤣",
+        "bsmile":       "😀",
+        "tsmile":       "😁",
+        "crylaugh":     "😂",
+        "steamnose":    "😤",
+        "moneyeyes":    "🤑",
+        "puke":         "🤮",
+        "cold":         "🥶",
+        "bawling":      "😭",
+        "cool":         "😎",
+        "loveface":     "😍",
+        "kissface":     "😘",
+        "alien":        "👽",
+        "robot":        "🤖",
+        "poo":          "💩",
+        "mindblown":    "🤯",
+        "ghost":        "👻",
+        "sick":         "🤢",
+        "spicy":        "🥵",
+        "clown":        "🤡",
+        "devilsmile":   "😈",
+        "devilmad":     "👿",
+        "cursing":      "🤬"
+    },
+    
+    "people": {
+        "baby":         "👶",
+        "fpolice":      "👮‍♀️",
+        "mpolice":      "👮‍♂️",
+        "fconstruction":"👷‍♀️",
+        "mconstruction":"👷‍♂️",
+        "fdectective":  "🕵️‍♀️",
+        "mdectective":  "🕵️‍♂️"
+    }
+}
