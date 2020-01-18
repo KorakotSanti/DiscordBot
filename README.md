@@ -2,9 +2,12 @@
 Discord bot using the javascript.js module version 12.0.0 (which the devs are still working on)
 
 
-## Installations
+# Installations
 Before you start you need to have Node.js version 10+ installed <br>
-You can download Node.js at https://nodejs.org/en/download/
+You can download Node.js at https://nodejs.org/en/download/ <br>
+
+You also need to go to the discord's developers page to create a bot and acquire a bot token of your own.
+
 
 **Discord javascript module**
 -----------------------------
