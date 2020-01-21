@@ -7,15 +7,12 @@ const MusicPlayer = require('./music-player/music.js');
 // to play audio from youtube
 const ytdl = require('ytdl-core');
 
-// represents the different servers with queue
-var servers = {};
-
 // creating the discord bot client and initializing a storage for commands
 const bot = new Discord.Client();
 bot.commands = new Discord.Collection();
 
 // the music player portion of the bot with commands
-const musicbot = new MusicPlayer(servers,bot);
+const musicbot = new MusicPlayer(bot);
 
 // get array of command files from the commands folder
 const commandFiles = fs.readdirSync('./commands').filter(file=>file.endsWith('.js'));
@@ -40,25 +37,8 @@ bot.on('message', async message => {
     const args = message.content.slice(prefix.length).split(" ");
     const commandName = args.shift().toLowerCase();
 
-    if(commandName === 'play'){
-        musicbot.playMusic(message,args);
-        return;
-    }
-
-    if(commandName === 'skip'){
-        musicbot.skipMusic(message,args);
-        return;
-    }
-
-    if(commandName === 'stop'){
-        musicbot.stopMusic(message,args);
-        return;
-    }
-
-    if(commandName === 'addmusic'){
-        musicbot.addmusic(message,args);
-        return;
-    }
+    // this checks for music command 
+    if(checkMusicCommand(message,args,commandName)) return;
 
     if(!bot.commands.has(commandName)){
         message.channel.send("That ain't a command homie");
@@ -83,4 +63,26 @@ bot.on("guildMemberAdd", member => {
     channel.send(`Welcome to our server new friend: ${member}`);
 });
 
+function checkMusicCommand(message,args,commandName){
+
+    switch(commandName) {
+        case 'play':
+            musicbot.playMusic(message,args);
+            break;
+        case 'skip':
+            musicbot.skipMusic(message,args);
+            break;
+        case 'stop':
+            musicbot.stopMusic(message,args);
+            break;
+        case 'queue':
+            musicbot.musicQueue(message,args);
+            break;
+        default:
+            return false;
+    }
+
+    return true;
+    
+}
 bot.login(token);
