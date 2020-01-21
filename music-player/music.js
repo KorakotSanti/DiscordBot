@@ -2,30 +2,44 @@ const Discord = require('discord.js');
 const ytdl = require('ytdl-core');
 
 class MusicPlayer{
-    constructor(servers,bot){
-        this.servers = servers;
+    constructor(bot){
+        this.queue = [];
         this.bot = bot;
+        this.connection = undefined;
+        this.dispatcher = undefined;
+        this.currentlyPlaying = "Nothing";
     }
 
+    async play(message){
+        // to get the currently playing song.
+        let info = await ytdl.getInfo(this.queue[0]);
+        this.currentlyPlaying = info.title;
+
+        // to play audio based on youtube video
+        this.dispatcher = await this.connection.play(ytdl(this.queue[0], {
+            filter:'audioonly', // youtube download settings
+            highWaterMark: 1<<25 
+        }),{
+            volume: 0.5 //dispatcher settings
+        });
+
+        message.channel.send(`Currently playing ${this.queue[0]}`);
+        // remove the front item from the array
+        this.queue.shift();
+
+        // whenever the previous audio is done playing, play
+        // the next one on the list
+        this.dispatcher.on('end', ()=>{
+            if(this.queue[0]){
+                this.play(message);
+            } else {
+                message.channel.send("Leaving voice channel...");
+                this.connection.disconnect();
+                this.connection = this.dispatcher = undefined;
+            }
+        });
+    }
     async playMusic(message, args){
-        function play(connection, message, server){
-            // to play audio based on youtube video
-            server.dispatcher = connection.play(ytdl(server.queue[0], {filter:'audioonly'}));
-
-            // remove the front item from the array
-            server.queue.shift();
-
-            // whenever the previous audio is done playing, play
-            // the next one on the list
-            server.dispatcher.on('end', ()=>{
-                if(server.queue[0]){
-                    play(connection,message,server);
-                } else {
-                    message.channel.send("Leaving voice channel...");
-                    connection.disconnect();
-                }
-            });
-        }
 
         // check for video link argument if none, error
         if(!args[0]){
@@ -39,22 +53,22 @@ class MusicPlayer{
             return;
         }
 
-        // add queue to server with no previous queue
-        if(!this.servers[message.guild.id]){
-            this.servers[message.guild.id] = {
-                queue: []
-            }
-        } 
+        //check if the youtube url is valid
+        if(!ytdl.validateURL(args[0])){
+            await message.reply("You need to provide a valid youtube video url!\nsuch as https://www.youtube.com/watch?v=y6120QOlsfU");
+            await message.reply("Use the \"!help *command*\" to see correct usage of commands");
+            return; 
+        }
 
         // getting the current user's server queue and pushing youtube link on there
-        let server = this.servers[message.guild.id];
-        server.queue.push(args[0]);
-        
+        this.queue.push(args[0]);
+
         // bot will join the channel only if it is not already in the channel
-        if(!message.guild.voiceConnection){
+        if(!this.connection){
             await message.member.voice.channel.join()
-                .then(connection => {
-                    play(connection,message,server);
+                .then(clientconnection => {
+                    this.connection = clientconnection; 
+                    this.play(message);
                 });
         }
         return;
@@ -68,32 +82,31 @@ class MusicPlayer{
     
     // function will be for skipping music
     async skipMusic(message,args){
-        await message.reply("This is the skip command");
+        if(this.dispatcher){
+            this.dispatcher.end();
+        }
         return;
     }
 
-    // function for adding music to queue   
-    async addmusic(message,args){
-        if(!args[0]){
-            message.reply('please provide an youtube video link');
-            return;
+    // to display the currently queue
+    async musicQueue(message,args){
+        // checks if there are any songs in queue
+        if(!this.queue){
+            await message.channel.send("There is no songs in queue\n to add songs use the !play follow by a youtube link")
         }
 
-        if(!this.servers[message.guild.id]){
-            this.servers[message.guild.id] = {
-                queue:[]
-            }
-            message.reply('please use the !play command to play the music');
-            return;
+        // The message array
+        let songs_in_queue = ["Songs in queue","------------------------------------------------------"];
+        let songlist = new Array(this.queue.length).fill(" ");
+
+        // go to all the songs indivdually to get the song titles.
+        for(let i = 0; i<this.queue.length; i++){
+            let info = await ytdl.getInfo(this.queue[i]);
+            songlist[i] = `${i+1}. ${info.title}`;
         }
 
-        if(!this.servers[message.guild.id].queue){
-            message.reply('please use the !play command to play the music\n Only use the !addmusic command to add music when bot is already playing music');
-            return;
-        }
-
-        // adding the music to the queue
-        this.servers[message.guild.id].queue.push(args[0]);
+        await message.channel.send([...songs_in_queue,...songlist].join("\n"));
+        return;
     }
 }
 
