@@ -78,6 +78,9 @@ function checkMusicCommand(message,args,commandName){
         case 'queue':
             musicbot.musicQueue(message,args);
             break;
+        case 'current':
+            musicbot.current(message,args);
+            break;
         default:
             return false;
     }

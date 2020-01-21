@@ -20,7 +20,7 @@ class MusicPlayer{
             filter:'audioonly', // youtube download settings
             highWaterMark: 1<<25 
         }),{
-            volume: 0.5 //dispatcher settings
+            volume: 0.1 //dispatcher settings
         });
 
         message.channel.send(`Currently playing ${this.queue[0]}`);
@@ -30,6 +30,7 @@ class MusicPlayer{
         // whenever the previous audio is done playing, play
         // the next one on the list
         this.dispatcher.on('end', ()=>{
+            this.currentlyPlaying = "Nothing";
             if(this.queue[0]){
                 this.play(message);
             } else {
@@ -76,15 +77,28 @@ class MusicPlayer{
 
     // function will be for stoping music
     async stopMusic(message,args){
-        await message.reply("This is the stop command");
+        if(!this.dispatcher){
+            await message.reply('There is no music playing right now ...');
+            return;
+        }
+
+        await message.reply('Stopping music player...');
+        // empty the queue before doing anything
+        this.queue = [];
+        // ending the played music
+        this.dispatcher.end();
         return;
     }
     
     // function will be for skipping music
     async skipMusic(message,args){
         if(this.dispatcher){
+            await message.channel.send('Skipping Song...'); 
             this.dispatcher.end();
+            return;
         }
+
+        await message.channel.send('There is no music playing right now...');
         return;
     }
 
@@ -106,6 +120,12 @@ class MusicPlayer{
         }
 
         await message.channel.send([...songs_in_queue,...songlist].join("\n"));
+        return;
+    }
+
+    // send in message channel the current song playing
+    async current(message, args){
+        message.reply(` is currently playing: ${this.currentlyPlaying}`);
         return;
     }
 }
