@@ -13,8 +13,16 @@ You also need to go to the discord's developers page to create a bot and acquire
 -----------------------------
 - npm i discordjs/discord.js
 
+Full discordjs documentation here ==> https://discord.js.org/#/docs/main/master/general/welcome <br>
+This Discord Bot is currently working on the master version
+
 **Voice Support module**
 -----------------------------
 - npm i node-opus
-- npm i ffmpeg-binaries@3.2.2-3
 - npm i ffmpeg-static
+- npm i ytdl-core 
+
+node-opus and ffmpeg-static is for audio support
+
+ytdl-core allows us to download videos off of youtube and convert them into readable stream <br>
+ytdl-core documenations in the readme.md ==> https://github.com/fent/node-ytdl-core
