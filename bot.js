@@ -16,11 +16,15 @@ const musicbot = new MusicPlayer(bot);
 
 // get array of command files from the commands folder
 const commandFiles = fs.readdirSync('./commands').filter(file=>file.endsWith('.js'));
-
+const musicCommands = fs.readdirSync('./musicCommands').filter(file=>file.endsWith('.js'));
 // set the commands to the bot
 for (const file of commandFiles) {
     const command = require(`./commands/${file}`);
     bot.commands.set(command.name, command);
+}
+for (const file of musicCommands) {
+    const command = require(`./musicCommands/${file}`);
+    bot.commands.set(command.name,command);
 }
 
 bot.once("ready", () => {
@@ -33,20 +37,26 @@ bot.once("ready", () => {
 
 bot.on('message', async message => {
     if(!message.content.startsWith(prefix) || message.author.bot) return;
-
+    
+    // spliting the user message into arrays slicing off the command prefix
+    // args[0] will always represent the commandName
     const args = message.content.slice(prefix.length).split(" ");
     const commandName = args.shift().toLowerCase();
 
-    // this checks for music command 
-    if(checkMusicCommand(message,args,commandName)) return;
+    // append musicbot object to the end of the args
+    args.push(musicbot);
 
+    // check if bot has the commands of not
     if(!bot.commands.has(commandName)){
         message.channel.send("That ain't a command homie");
         return;
     }
 
+    // get the command object according to the command name
     const command = bot.commands.get(commandName);
 
+    // execute the command
+    // each commands has a different execute function
     try {
         command.execute(message,args);
     } catch (error) {
@@ -55,6 +65,7 @@ bot.on('message', async message => {
     }
 });
 
+// does something when someone new joins the discord server
 bot.on("guildMemberAdd", member => {
     const channel = member.guild.channels.find( ch => ch.name === 'general');
 
@@ -63,29 +74,4 @@ bot.on("guildMemberAdd", member => {
     channel.send(`Welcome to our server new friend: ${member}`);
 });
 
-function checkMusicCommand(message,args,commandName){
-
-    switch(commandName) {
-        case 'play':
-            musicbot.playMusic(message,args);
-            break;
-        case 'skip':
-            musicbot.skipMusic(message,args);
-            break;
-        case 'stop':
-            musicbot.stopMusic(message,args);
-            break;
-        case 'queue':
-            musicbot.musicQueue(message,args);
-            break;
-        case 'current':
-            musicbot.current(message,args);
-            break;
-        default:
-            return false;
-    }
-
-    return true;
-    
-}
 bot.login(token);
