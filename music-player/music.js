@@ -76,7 +76,7 @@ class MusicPlayer{
     }
 
     // function will be for stoping music
-    async stopMusic(message,args){
+    async stopMusic(message){
         if(!this.dispatcher){
             await message.reply('There is no music playing right now ...');
             return;
@@ -91,7 +91,7 @@ class MusicPlayer{
     }
     
     // function will be for skipping music
-    async skipMusic(message,args){
+    async skipMusic(message){
         if(this.dispatcher){
             await message.channel.send('Skipping Song...'); 
             this.dispatcher.end();
@@ -103,10 +103,11 @@ class MusicPlayer{
     }
 
     // to display the currently queue
-    async musicQueue(message,args){
+    async musicQueue(message){
         // checks if there are any songs in queue
-        if(!this.queue){
+        if(this.queue.length == 0){
             await message.channel.send("There is no songs in queue\n to add songs use the !play follow by a youtube link")
+            return;
         }
 
         // The message array
@@ -124,8 +125,45 @@ class MusicPlayer{
     }
 
     // send in message channel the current song playing
-    async current(message, args){
-        message.reply(` is currently playing: ${this.currentlyPlaying}`);
+    async current(message){
+        message.channel.send(`${this.bot.user} is currently playing: ${this.currentlyPlaying}`);
+        return;
+    }
+
+    // pauses the music 
+    async pause(message){
+        // checks if there is an active dispatcher
+        if(!this.dispatcher){
+            await message.channel.send('There are no music playing at the moment.');
+            return;
+        }
+        // check if it is already paused or not
+        if(this.dispatcher.paused){
+            await message.channel.send(`${this.bot.user.tag} is currently paused at the moment.`);
+            return;
+        }
+
+        this.dispatcher.pause([true]);
+        message.channel.send('Music is pausing...');
+        return;
+    }
+
+    //resume the music if it is paused
+    async resume(message){
+        //checks if the dispatcher is active
+        if(!this.dispatcher){
+            await message.channel.send('The bot isn\'t currently paused or playing any music at the moment.');
+            return;
+        }
+
+        // check for not paused state
+        if(!this.dispatcher.paused){
+            await message.channel.send('You can only use this command when the bot is paused.');
+            return;
+        }
+
+        this.dispatcher.resume();
+        message.channel.send('Resuming the Party! I mean music...');
         return;
     }
 }
