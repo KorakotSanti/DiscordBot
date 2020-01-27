@@ -6,6 +6,7 @@ module.exports = {
     cooldown: 5,
     usage: '!resume',
     async execute(message, args){
+        args.pop();
         const musicbot = args.pop();
         musicbot.resume(message);
     }

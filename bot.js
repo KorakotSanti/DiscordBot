@@ -3,6 +3,7 @@ const { token, prefix } = require("./botsettings.json");
 const Discord = require("discord.js");
 const fs = require('fs');
 const MusicPlayer = require('./music-player/music.js');
+const pollClass = require('./pollClass.js');
 
 // to play audio from youtube
 const ytdl = require('ytdl-core');
@@ -13,6 +14,7 @@ bot.commands = new Discord.Collection();
 
 // the music player portion of the bot with commands
 const musicbot = new MusicPlayer(bot);
+const pollbot = new pollClass(bot);
 
 // get array of command files from the commands folder
 const commandFiles = fs.readdirSync('./commands').filter(file=>file.endsWith('.js'));
@@ -45,6 +47,7 @@ bot.on('message', async message => {
 
     // append musicbot object to the end of the args
     args.push(musicbot);
+    args.push(pollbot);
 
     // check if bot has the commands of not
     if(!bot.commands.has(commandName)){

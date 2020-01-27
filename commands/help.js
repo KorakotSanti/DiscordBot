@@ -12,12 +12,10 @@ module.exports = {
         const data = [];
         // get all of the bot's stored commands
         const { commands } = message.client;
-
-        //require remove the musicbot object from the args lists
         args.pop();
-
+        args.pop();
         // check if there are any arguments that follows the command
-        if(args.length==0) {
+        if(!args.length) {
             data.push('List of all commands');
             // add all the command string in data
             data.push(commands.map(command=>command.name).join(",\n"));
@@ -33,7 +31,6 @@ module.exports = {
                     console.error(`Could not send help DM to ${message.author.tag}.\n`, error);
                     message.reply(`it seems like I can\'t dm you!`);
                 });
-            return;
         }
 
 

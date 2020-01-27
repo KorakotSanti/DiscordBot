@@ -6,6 +6,7 @@ module.exports = {
     cooldown: 5,
     usage: '!play "youtube link" (remove the quotations)',
     async execute(message, args){
+        args.pop();
         const musicbot = args.pop();
         musicbot.playMusic(message,args);
     }

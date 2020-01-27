@@ -6,6 +6,7 @@ module.exports = {
     cooldown: 5,
     usage: '!current',
     async execute(message, args){
+        args.pop();
         const musicbot = args.pop();
         musicbot.current(message);
     }
