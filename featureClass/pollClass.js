@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const {face} = require('./emojis/emojis.json');
+const {face} = require('../emojis/emojis.json');
 
 class pollClass{
     constructor(bot){
@@ -30,7 +30,7 @@ class pollClass{
         await this.pollMsg.react(face.puke);
         
         return;
-    }
+    }   
 }
 
 module.exports = pollClass;

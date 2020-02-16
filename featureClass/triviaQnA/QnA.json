@@ -1,0 +1,8 @@
+{
+    "quiz": [
+        {
+            "question": "What is the color RGBA",
+            "answer": ["Red","Blue"]
+        }
+    ]
+}

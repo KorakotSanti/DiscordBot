@@ -13,7 +13,6 @@ module.exports = {
         // get all of the bot's stored commands
         const { commands } = message.client;
         args.pop();
-        args.pop();
         // check if there are any arguments that follows the command
         if(!args.length) {
             data.push('List of all commands');
