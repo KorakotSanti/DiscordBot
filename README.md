@@ -26,3 +26,11 @@ node-opus and ffmpeg-static is for audio support
 
 ytdl-core allows us to download videos off of youtube and convert them into readable stream <br>
 ytdl-core documenations in the readme.md ==> https://github.com/fent/node-ytdl-core
+
+## FEATURES
+Music Player
+================
+- play: use command **!play {youtube link}** to play audio from youtube video. (do not include brackets). If there is current music playing the audio will be added to the queue
+- queue: use command **!queue** to display the song queue
+- pause: use command **!pause** to pause the music playing
+- stop: use command **!stop** to stop all audio from playing
