@@ -4,7 +4,7 @@
   "description": "discord bot",
   "main": "bot.js",
   "scripts": {
-    "start": "node bot.js"
+    "start": "nodemon --exec babel-node bot.js"
   },
   "author": "",
   "license": "ISC",
@@ -18,5 +18,11 @@
     "opusscript": "0.0.7",
     "ytdl-core": "^4.5.0",
     "ytdl-core-discord": "^1.2.5"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.13.10",
+    "@babel/node": "^7.13.10",
+    "@babel/preset-env": "^7.13.10",
+    "nodemon": "^2.0.7"
   }
 }

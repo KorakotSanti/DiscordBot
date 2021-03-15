@@ -168,4 +168,4 @@ class MusicPlayer{
     }
 }
 
-module.exports = MusicPlayer;
+export default MusicPlayer;

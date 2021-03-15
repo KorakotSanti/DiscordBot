@@ -1,6 +1,5 @@
 // to get the command prefix from botsettings
-const { prefix } = require('../botsettings.json');
-
+const prefix = "!";
 module.exports = {
     name:"help",
     description: "List of all of my commands or info about specific command",

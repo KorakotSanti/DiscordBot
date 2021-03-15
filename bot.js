@@ -2,7 +2,7 @@
 const dotenv = require('dotenv');
 const Discord = require('discord.js');
 const fs = require('fs');
-const MusicPlayer = require('./music-player/music.js');
+import MusicPlayer from './music-player/music.js';
 const pollClass = require('./featureClass/pollClass.js');
 const Trivia = require('./featureClass/trivia.js');
 
