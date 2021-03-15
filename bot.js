@@ -1,6 +1,6 @@
 // get token to run the bot, and command prefix
-const { token, prefix } = require("./botsettings.json");
-const Discord = require("discord.js");
+const dotenv = require('dotenv');
+const Discord = require('discord.js');
 const fs = require('fs');
 const MusicPlayer = require('./music-player/music.js');
 const pollClass = require('./featureClass/pollClass.js');
@@ -9,6 +9,9 @@ const Trivia = require('./featureClass/trivia.js');
 // to play audio from youtube
 const ytdl = require('ytdl-core');
 
+// access env
+dotenv.config();
+const { DISCORD_TOKEN: token, PREFIX: prefix } = process.env;
 // creating the discord bot client and initializing a storage for commands
 const bot = new Discord.Client();
 bot.commands = new Discord.Collection();
