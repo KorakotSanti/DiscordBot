@@ -1,16 +1,18 @@
 // get token to run the bot, and command prefix
-const dotenv = require('dotenv');
-const Discord = require('discord.js');
-const fs = require('fs');
-import MusicPlayer from './music-player/music.js';
-const pollClass = require('./featureClass/pollClass.js');
-const Trivia = require('./featureClass/trivia.js');
+import dotenv from "dotenv";
+import Discord from "discord.js";
+import MusicPlayer from "./music-player/music.js";
+import PollClass from "./featureClass/pollClass.js";
+import Trivia from "./featureClass/trivia.js";
+import commandLists from './commands';
+import musicCommands from './musicCommands';
 
 // to play audio from youtube
-const ytdl = require('ytdl-core');
+import ytdl from "ytdl-core";
 
 // access env
 dotenv.config();
+
 const { DISCORD_TOKEN: token, PREFIX: prefix } = process.env;
 // creating the discord bot client and initializing a storage for commands
 const bot = new Discord.Client();
@@ -18,68 +20,64 @@ bot.commands = new Discord.Collection();
 
 // the music player portion of the bot with commands
 const musicbot = new MusicPlayer(bot);
-const pollbot = new pollClass(bot);
+const pollbot = new PollClass(bot);
 const triviabot = new Trivia(bot);
 
-// get array of command files from the commands folder
-const commandFiles = fs.readdirSync('./commands').filter(file=>file.endsWith('.js'));
-const musicCommands = fs.readdirSync('./musicCommands').filter(file=>file.endsWith('.js'));
 // set the commands to the bot
-for (const file of commandFiles) {
-    const command = require(`./commands/${file}`);
-    bot.commands.set(command.name, command);
+for (let command of commandLists) {
+  bot.commands.set(command.name, command);
 }
-for (const file of musicCommands) {
-    const command = require(`./musicCommands/${file}`);
-    bot.commands.set(command.name,command);
+for (const command of musicCommands) {
+  bot.commands.set(command.name, command);
 }
 
 bot.once("ready", () => {
-    console.log(`Logged in as ${bot.user.tag}!`);
-    // set the bot's presence to "playing discord.js" on idle
-    bot.user.setPresence({activity: {name: "Discord.js"}, status: "idle"})
-        .then(console.log)
-        .catch(console.error);
+  console.log(`Logged in as ${bot.user.tag}!`);
+  // set the bot's presence to "playing discord.js" on idle
+  bot.user
+    .setPresence({ activity: { name: "Discord.js" }, status: "idle" })
+    .then(console.log)
+    .catch(console.error);
 });
 
-bot.on('message', async message => {
-    if(!message.content.startsWith(prefix) || message.author.bot) return;
-    
-    // spliting the user message into arrays slicing off the command prefix
-    // args[0] will always represent the commandName
-    const args = message.content.slice(prefix.length).split(" ");
-    const commandName = args.shift().toLowerCase();
+bot.on("message", async (message) => {
+  if (!message.content.startsWith(prefix) || message.author.bot) return;
 
-    // append musicbot object to the end of the args
-    let objList = [musicbot,pollbot,triviabot];
-    args.push(objList);
+  // spliting the user message into arrays slicing off the command prefix
+  // args[0] will always represent the commandName
+  const args = message.content.slice(prefix.length).split(" ");
+  const commandName = args.shift().toLowerCase();
 
-    // check if bot has the commands of not
-    if(!bot.commands.has(commandName)){
-        message.channel.send("That ain't a command homie");
-        return;
-    }
+  // append musicbot object to the end of the args
+  let objList = [musicbot, pollbot, triviabot];
+  args.push(objList);
 
-    // get the command object according to the command name
-    const command = bot.commands.get(commandName);
+  // check if bot has the commands of not
+  if (!bot.commands.has(commandName)) {
+    message.channel.send("That ain't a command homie");
+    return;
+  }
 
-    // execute the command
-    // each commands has a different execute function
-    try {
-        command.execute(message,args);
-    } catch (error) {
-        console.error(error);
-        message.reply("UH'OH SOMETHING WENT WRONG");
-    }
+  // get the command object according to the command name
+  const command = bot.commands.get(commandName);
+
+  // execute the command
+  // each commands has a different execute function
+  try {
+    command.execute(message, args);
+  } catch (error) {
+    console.error(error);
+    message.reply("UH'OH SOMETHING WENT WRONG");
+  }
 });
 
 // does something when someone new joins the discord server
-bot.on("guildMemberAdd", member => {
-    const channel = member.guild.channels.find( ch => ch.name === 'general');
+bot.on("guildMemberAdd", (member) => {
+  const channel = member.guild.channels.find((ch) => ch.name === "general");
 
-    if(!channel) return;
+  if (!channel) return;
 
-    channel.send(`Welcome to our server new friend: ${member}`);
+  channel.send(`Welcome to our server new friend: ${member}`);
 });
 
 bot.login(token);

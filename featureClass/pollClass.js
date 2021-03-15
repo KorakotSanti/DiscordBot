@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const {face} = require('../emojis/emojis.json');
 
-class pollClass{
+class PollClass{
     constructor(bot){
         this.bot = bot;
         this.yeslist = [];
@@ -33,4 +33,4 @@ class pollClass{
     }   
 }
 
-module.exports = pollClass;
+export default PollClass;

@@ -1,9 +1,10 @@
-const Discord = require("discord.js");
+import Discord from 'discord.js';
 
 class Trivia {
+    // takes in discord bot client object
     constructor(bot){
         this.bot = bot;
     }
 }
 
-module.exports = Trivia;
+export default Trivia;
